@@ -2,14 +2,10 @@ import streamlit as st
 import numpy as np
 import altair as alt
 import pandas as pd
-from sympy import *
-import sympy as sym
 from functions import *
 import sys
 import os
 import radioactivedecay as rad
-import matplotlib.pyplot as plt
-import streamlit_vertical_slider  as svs
 sys.path.append('../')
 
 

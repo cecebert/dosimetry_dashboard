@@ -1,0 +1,16 @@
+streamlit==1.27.2
+streamlit-aggrid==0.3.4.post3
+streamlit-authenticator==0.2.3
+streamlit-camera-input-live==0.2.0
+streamlit-card==0.0.61
+streamlit-embedcode==0.1.2
+streamlit-extras==0.3.4
+streamlit-faker==0.0.2
+streamlit-image-coordinates==0.1.6
+streamlit-keyup==0.2.0
+streamlit-sortables==0.2.0
+streamlit-toggle-switch==1.0.2
+streamlit-vertical-slider==1.0.2
+altair==5.1.2
+pandas==2.0.3
+radioactivedecay==0.4.21
