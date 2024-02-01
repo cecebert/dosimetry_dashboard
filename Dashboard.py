@@ -89,8 +89,7 @@ for i in range(len(l)):
     m=str.replace(l[i],'-table-0.csv', '')
     l1.append(m)
 
-l1.remove('.DS_Store')
-l1.remove('.ipynb_checkpoints')
+
 l1=np.array(l1, dtype='str')
 l1=np.sort(l1)
 
