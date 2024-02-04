@@ -89,6 +89,8 @@ for i in range(len(l)):
     m=str.replace(l[i],'-table-0.csv', '')
     l1.append(m)
 
+l1.remove('.DS_Store')
+l1.remove('.ipynb_checkpoints')
 l1=np.array(l1, dtype='str')
 l1=np.sort(l1)
 
@@ -183,7 +185,7 @@ cumulative_dose_df=pd.DataFrame()
 auc_to_t=[]
 
 for i in range(len(time)):
-    auc_to_t.append(np.trapz(activity_vs_time[0:i], time[0:i], dx=10))
+    auc_to_t.append(np.trapz(activity_vs_time[0:i], time[0:i]))
 
 auc_to_t=np.array(auc_to_t)*1E6*3600
 
@@ -266,21 +268,32 @@ columns1=st.columns(2)
 st.download_button('Download data from chart as .csv file', data=csv_dose_particle, file_name='dose_vs_time_vs_particle.csv', key='aaa')
 
 
+dose_particle_df_normalized=dose_particle_df[['time','Sum']]
+dose_particle_df_normalized['Sum']=dose_particle_df_normalized['Sum']/init_activity
 
 
+st.subheader('Initial activity for 30 or 50 Gy at a certain time')
+st.caption('The time choice is indicative for the calculation, the exact timepoint will be reported once the calculation is completed, this is recalculated given the kinetic parameters defined at the beginning. Hence, the results depend only on the PK profile of the drug and on the % IDG deriving from the biodistribution. You can double check the numbers with the graph just above.')
 
+dose_radio_button=st.radio('Choose which dose in Gy you want to reach', options=[30, 50])
+time_required_dose=st.number_input('Time for reaching this dose', min_value=0.000001, max_value=time[-1], value=10.)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+try:
+    dose_particle_df_normalized['Diff']= (dose_particle_df_normalized['time']-time_required_dose).abs()
+    min_time_row=dose_particle_df_normalized[dose_particle_df_normalized['Diff']==dose_particle_df_normalized['Diff'].min()]
+    
+    
+    if dose_radio_button==50:
+        selected_time=min_time_row['time']
+        a0_fifty_gy=50./min_time_row['Sum'].values
+        a0_fifty_gy=a0_fifty_gy[0]
+        st.write('To reach 50 Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_time, a0_fifty_gy))
+    
+    if dose_radio_button==30:
+        selected_time=min_time_row['time']
+        a0_fifty_gy=30./min_time_row['Sum'].values
+        a0_fifty_gy=a0_fifty_gy[0]
+        st.write('To reach 30 Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_time, a0_fifty_gy))
+    
+except:
+    st.warning('The kinetic parameters of the model are incompatible with initial activity estimation, modify and try again')
