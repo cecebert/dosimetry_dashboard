@@ -89,7 +89,6 @@ for i in range(len(l)):
     m=str.replace(l[i],'-table-0.csv', '')
     l1.append(m)
 
-
 l1=np.array(l1, dtype='str')
 l1=np.sort(l1)
 
@@ -138,6 +137,7 @@ st.altair_chart(chart2, theme=None, use_container_width=True)
 
 particle_table=read_nuclide_csv(unformatted_nuclide_name)
 
+
 beta='β'
 alpha='α'
 auger='Aug'
@@ -149,28 +149,30 @@ columns0=st.columns(4)
 
 alpha_disabler=False
 
+particle_table
 
-if extract_dose_particle(particle_table, alpha)[0]!=0.0:
+if extract_dose_particle(particle_table, alpha)!=0.0:
     alpha_selector=columns0[0].checkbox('α', disabled=alpha_disabler, value=True)
-    alpha_dose=extract_dose_particle(particle_table, alpha)[0]
+    st.write(extract_dose_particle(particle_table, alpha))
+    alpha_dose=extract_dose_particle(particle_table, alpha)
 else:
     alpha_selector=columns0[0].checkbox('α', disabled=True, value=False)
 
 if extract_dose_particle(particle_table, beta)!=0.0:
     beta_selector=columns0[1].checkbox('β', value=True)
-    beta_dose=extract_dose_particle(particle_table, beta)[0]
+    beta_dose=extract_dose_particle(particle_table, beta)
 else:
     beta_selector=columns0[1].checkbox('β', disabled=True, value=False)
 
 if extract_dose_particle(particle_table, auger)!=0.0:
     auger_selector=columns0[2].checkbox('Auger',value=True)
-    auger_dose=extract_dose_particle(particle_table, auger)[0]
+    auger_dose=extract_dose_particle(particle_table, auger)
 else:
     auger_selector=columns0[2].checkbox('Auger', disabled=True, value=False)
 
 if extract_dose_particle(particle_table, conv_elec)!=0.0:
     ce_selector=columns0[3].checkbox('Conversion Electrons', value=True)
-    ce_dose=extract_dose_particle(particle_table, conv_elec)[0]
+    ce_dose=extract_dose_particle(particle_table, conv_elec)
 else:
     ce_selector=columns0[3].checkbox('Conversion Electrons', disabled=True, value=False)
 
@@ -242,7 +244,9 @@ selection = alt.selection_point(fields=['value'], bind='legend')
 
 chart4=alt.Chart(df2).mark_line().encode(alt.X('time').title('time(h)'), alt.Y('value', axis=alt.Axis(format=".3")).title('Dose (Gy)'), alt.Color('variable').title('Type')).interactive()
 
-required_dose=st.slider('Required total dose', min_value=0., max_value=max(dose_particle_df['Sum']))
+dose_particle_df
+
+required_dose=st.number_input('Required total dose', min_value=0., max_value=max(dose_particle_df['Sum']))
 
 y_line=alt.Chart(df2).mark_rule(color='red', strokeWidth=1, strokeOpacity=0.02, fillOpacity=0.02).encode(y=alt.datum(float(required_dose)))
 
@@ -260,14 +264,6 @@ csv_dose_particle=dose_particle_df.to_csv().encode('utf-8')
 columns1=st.columns(2)
 
 st.download_button('Download data from chart as .csv file', data=csv_dose_particle, file_name='dose_vs_time_vs_particle.csv', key='aaa')
-
-
-
-
-
-
-
-
 
 
 

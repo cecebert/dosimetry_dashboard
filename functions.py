@@ -13,10 +13,15 @@ Extract the dose delivered per particle from the dataframe of the chosen nuclide
 """
 
 def extract_dose_particle(df, particle_name):
+    particle_list_1=df['Particle'][df['Particle'].str.find(particle_name)!=-1]
+    particle_list_2=df['Particle'][df['Particle'].str.find('ray')!=-1]
+    list_union=set(particle_list_1).intersection(set(particle_list_2))
+    df=df[~df['Particle'].isin(list_union)]
     particle_list=df['Particle'][df['Particle'].str.find(particle_name)!=-1]
-    particle_list=particle_list.str.find('X-ray')==-1
-    sum_e=df.iloc[list(particle_list.index)]['Dose'].astype(float).sum()
-    return [sum_e, particle_list]
+    df=df[df['Particle'].isin(particle_list)]
+    print(df)
+    sum_e=df['Dose'].astype(float).sum()
+    return sum_e
 
 def bateman(t,a0, k1, k2):
     import numpy as np
