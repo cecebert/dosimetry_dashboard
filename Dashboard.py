@@ -18,29 +18,29 @@ widget_selector=cols[0].radio('Choose your favorite widget', options=['Slider', 
 half_life_selector=cols[1].radio('Choose between half-lives and rate constants', options=['Rate constants', 'Half-lives'])
 
 if widget_selector=='Slider' and half_life_selector=='Rate constants':
-    k1=st.slider('k1', min_value=0.00001, max_value=10.0,value=0.05,format='%.5f')
-    k2=st.slider('k2', min_value=0.00001, max_value=10.0,value=0.001,format='%.5f')
+    k1=st.slider('k1 (1/h)', min_value=0.00001, max_value=10.0,value=0.05,format='%.5f')
+    k2=st.slider('k2 (1/h)', min_value=0.00001, max_value=10.0,value=0.001,format='%.5f')
     idg=st.slider('% Injected dose / g', min_value=0.00000,max_value=100.0, value=1. )
     init_activity=st.slider('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
 
 
 elif widget_selector=='Number input' and half_life_selector=='Rate constants':
-    k1=st.number_input('k1', min_value=0.00001,value=0.05, format='%.5f')
-    k2=st.number_input('k2', min_value=0.00001,value=0.001, format='%.5f')
+    k1=st.number_input('k1 (1/h)', min_value=0.00001,value=0.05, format='%.5f')
+    k2=st.number_input('k2 (1/h)', min_value=0.00001,value=0.001, format='%.5f')
     idg=st.number_input('% Injected dose / g', min_value=0.00001,max_value=100.0, value=1. )
     init_activity=st.number_input('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
 
 elif widget_selector=='Number input' and half_life_selector=='Half-lives':
-    lambda1=st.number_input('λ1', min_value=0.00001,value=25., format='%.5f')
-    lambda2=st.number_input('λ2', min_value=0.00001,value=50., format='%.5f')
+    lambda1=st.number_input('λ1 (h)', min_value=0.00001,value=25., format='%.5f')
+    lambda2=st.number_input('λ2 (h)', min_value=0.00001,value=50., format='%.5f')
     idg=st.number_input('% Injected dose / g', min_value=0.00001,max_value=100.0, value=1. )
     init_activity=st.number_input('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
     k1=np.log(2)/lambda1
     k2=np.log(2)/lambda2
     
 elif widget_selector=='Slider' and half_life_selector=='Half-lives':
-    lambda1=st.slider('λ1', min_value=0.00001,value=25., max_value=100., format='%.5f')
-    lambda2=st.slider('λ2', min_value=0.00001,value=50., max_value=100., format='%.5f')
+    lambda1=st.slider('λ1 (h)', min_value=0.00001,value=25., max_value=100., format='%.5f')
+    lambda2=st.slider('λ2 (h)', min_value=0.00001,value=50., max_value=100., format='%.5f')
     idg=st.slider('Injected dose / g', min_value=0.00001,max_value=100.0, value=1. )
     init_activity=st.slider('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
     k1=np.log(2)/lambda1
@@ -51,7 +51,7 @@ t_max_graph=st.number_input('Select the maximum time (in h) for the graph', min_
 half_life_intake=np.log(2)/k1
 half_life_excretion=np.log(2)/k2
 
-x_axis_plot=10*(max(half_life_excretion, half_life_intake))
+x_axis_plot=8*(max(half_life_excretion, half_life_intake))
 
 y_bateman=[]
 time=[]
@@ -89,8 +89,8 @@ for i in range(len(l)):
     m=str.replace(l[i],'-table-0.csv', '')
     l1.append(m)
 
-
-
+#l1.remove('.DS_Store')
+#l1.remove('.ipynb_checkpoints')
 l1=np.array(l1, dtype='str')
 l1=np.sort(l1)
 
@@ -120,7 +120,7 @@ half_life_nuc=rad.Nuclide(str(sel_nucl)).half_life('hours')
 
 k_decay=np.log(2)/rad.Nuclide(str(sel_nucl)).half_life('hours')
 
-timescale=min([half_life_excretion, half_life_nuc])
+timescale=max([half_life_excretion, half_life_nuc])
 
 time=np.array(np.linspace(0,20*timescale, 10000))
 
@@ -275,25 +275,27 @@ dose_particle_df_normalized['Sum']=dose_particle_df_normalized['Sum']/init_activ
 st.subheader('Initial activity for 30 or 50 Gy at a certain time')
 st.caption('The time choice is indicative for the calculation, the exact timepoint will be reported once the calculation is completed, this is recalculated given the kinetic parameters defined at the beginning. Hence, the results depend only on the PK profile of the drug and on the % IDG deriving from the biodistribution. You can double check the numbers with the graph just above.')
 
-dose_radio_button=st.radio('Choose which dose in Gy you want to reach', options=[30, 50])
-time_required_dose=st.number_input('Time for reaching this dose', min_value=0.000001, max_value=time[-1], value=10.)
+dose_radio_button=st.radio('Choose which dose in Gy you want to reach', options=['Choose your own', '50 Gy'])
 
-try:
-    dose_particle_df_normalized['Diff']= (dose_particle_df_normalized['time']-time_required_dose).abs()
-    min_time_row=dose_particle_df_normalized[dose_particle_df_normalized['Diff']==dose_particle_df_normalized['Diff'].min()]
+if dose_radio_button=='Choose your own':
+    selected_dose=st.number_input('Dose you want to achieve in Gy', min_value=0.001, max_value=1000., value=10.)
+
+time_required_dose=st.number_input('Time for reaching this dose in h', min_value=0.000001, max_value=time[-1], value=10.)
+
+
+dose_particle_df_normalized['Diff']= (dose_particle_df_normalized['time']-time_required_dose).abs()
+min_time_row=dose_particle_df_normalized[dose_particle_df_normalized['Diff']==dose_particle_df_normalized['Diff'].min()]
+
     
+if dose_radio_button=='50 Gy':
+    selected_time=min_time_row['time']
+    a0_fifty_gy=50./min_time_row['Sum'].values
+    a0_fifty_gy=a0_fifty_gy[0]
+    st.write('To reach 50 Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_time, a0_fifty_gy))
+
+if dose_radio_button=='Choose your own':
+    selected_time=min_time_row['time']
+    a0_fifty_gy=selected_dose/min_time_row['Sum'].values
+    a0_fifty_gy=a0_fifty_gy[0]
+    st.write('To reach %.1f Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_dose, selected_time, a0_fifty_gy))
     
-    if dose_radio_button==50:
-        selected_time=min_time_row['time']
-        a0_fifty_gy=50./min_time_row['Sum'].values
-        a0_fifty_gy=a0_fifty_gy[0]
-        st.write('To reach 50 Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_time, a0_fifty_gy))
-    
-    if dose_radio_button==30:
-        selected_time=min_time_row['time']
-        a0_fifty_gy=30./min_time_row['Sum'].values
-        a0_fifty_gy=a0_fifty_gy[0]
-        st.write('To reach 30 Gy at %.1f hours, you will need %.1f MBq of initial activity' % (selected_time, a0_fifty_gy))
-    
-except:
-    st.warning('The kinetic parameters of the model are incompatible with initial activity estimation, modify and try again')
