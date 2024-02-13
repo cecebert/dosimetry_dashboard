@@ -120,7 +120,7 @@ half_life_nuc=rad.Nuclide(str(sel_nucl)).half_life('hours')
 
 k_decay=np.log(2)/rad.Nuclide(str(sel_nucl)).half_life('hours')
 
-timescale=max([half_life_excretion, half_life_nuc])
+timescale=min([half_life_excretion, half_life_nuc])
 
 time=np.array(np.linspace(0,20*timescale, 10000))
 
