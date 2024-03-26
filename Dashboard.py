@@ -9,7 +9,7 @@ import radioactivedecay as rad
 sys.path.append('../')
 
 
-st.title('Dosimetry profiling')
+st.title('☢️ Dosimetry profiling')
 
 cols=st.columns(2)
 
