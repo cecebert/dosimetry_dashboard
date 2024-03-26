@@ -31,16 +31,16 @@ elif widget_selector=='Number input' and half_life_selector=='Rate constants':
     init_activity=st.number_input('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
 
 elif widget_selector=='Number input' and half_life_selector=='Half-lives':
-    lambda1=st.number_input('λ1 (h)', min_value=0.00001,value=25., format='%.5f')
-    lambda2=st.number_input('λ2 (h)', min_value=0.00001,value=50., format='%.5f')
+    lambda1=st.number_input('t1 (h)', min_value=0.00001,value=25., format='%.5f')
+    lambda2=st.number_input('t2 (h)', min_value=0.00001,value=50., format='%.5f')
     idg=st.number_input('% Injected dose / g', min_value=0.00001,max_value=100.0, value=1. )
     init_activity=st.number_input('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
     k1=np.log(2)/lambda1
     k2=np.log(2)/lambda2
     
 elif widget_selector=='Slider' and half_life_selector=='Half-lives':
-    lambda1=st.slider('λ1 (h)', min_value=0.00001,value=25., max_value=100., format='%.5f')
-    lambda2=st.slider('λ2 (h)', min_value=0.00001,value=50., max_value=100., format='%.5f')
+    lambda1=st.slider('t1 (h)', min_value=0.00001,value=25., max_value=100., format='%.5f')
+    lambda2=st.slider('t2 (h)', min_value=0.00001,value=50., max_value=100., format='%.5f')
     idg=st.slider('Injected dose / g', min_value=0.00001,max_value=100.0, value=1. )
     init_activity=st.slider('Initial activity in MBq', min_value=0.00001, max_value=100., value=1.)
     k1=np.log(2)/lambda1
