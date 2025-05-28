@@ -248,7 +248,7 @@ chart4=alt.Chart(df2).mark_line().encode(alt.X('time').title('time(h)'), alt.Y('
 
 dose_particle_df
 
-required_dose=st.number_input('Required total dose', min_value=0., max_value=max(dose_particle_df['Sum']))
+required_dose=st.number_input('Required total dose', min_value=0., max_value=max(dose_particle_df['Sum']/2))
 
 y_line=alt.Chart(df2).mark_rule(color='red', strokeWidth=1, strokeOpacity=0.02, fillOpacity=0.02).encode(y=alt.datum(float(required_dose)))
 
