@@ -7,7 +7,7 @@ import sys
 import os
 import radioactivedecay as rad
 sys.path.append('../')
-
+st.set_option('server.fileWatcherType', 'none')
 
 st.title('☢️ Dosimetry profiling')
 
