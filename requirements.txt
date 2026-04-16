@@ -14,3 +14,4 @@ streamlit-vertical-slider==1.0.2
 altair==5.1.2
 pandas==2.0.3
 radioactivedecay==0.4.21
+setuptools
